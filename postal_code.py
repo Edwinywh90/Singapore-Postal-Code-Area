@@ -1,6 +1,4 @@
-from config import CSV_DIR
 import pandas as pd
-import os
 
 class PostalCode:
     
@@ -24,13 +22,4 @@ class PostalCode:
                 postal_code.append(current_postal_code)
 
         return postal_code
-
-    def export_postal_code_to_csv(self, postal_code):
-        if not os.path.exists(os.path.dirname(CSV_DIR)):
-            os.mkdir(os.path.dirname(CSV_DIR))
-
-        with open(CSV_DIR, "w") as f:
-            for code in postal_code:
-                f.writelines(f"{code}\n")
-
     

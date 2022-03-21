@@ -11,23 +11,23 @@ as onemap limits 250 requests per minutes https://www.onemap.gov.sg/docs/
 implement rate limit https://pypi.org/project/ratelimit/
 
 """
+
 import logging
-# from unittest import skip
 from constants import *
 from config import *
 from postal_code import PostalCode
 from one_map import OneMap
+from ura import URA
 from datetime import datetime
 
 # import http.client
 # http.client.HTTPConnection.debuglevel = 1
 
-# logger = getLogger(__name__)
-
 if __name__ == '__main__':
+    filename = f"log\postal_code_{datetime.now().strftime('%Y%m%d%H%M')}.log"
     logging.basicConfig(
-            filename=f"log/postal_code_{datetime.now().strftime('%F %X')}.log",
-            format= "%(levelname)s %(asctime)s %(filename)s %(message)s",
+            filename=filename,
+            format='%(asctime)s %(levelname)s %(filename)s %(message)s',
             datefmt="%Y-%m-%d %H:%M:%S",
             level=logging.INFO
     )
@@ -35,6 +35,8 @@ if __name__ == '__main__':
     # requests_log = logging.getLogger("requests.packages.urllib3")
     # requests_log.setLevel(logging.DEBUG)
     # requests_log.propagate = True
+    
+    logging.info("Script started")
 
     postal = PostalCode(prefix_url=POSTAL_CODE_PREFIX_URL,
                         suffix_range=POSTAL_CODE_SUFFIX_RANGE,
@@ -43,11 +45,10 @@ if __name__ == '__main__':
     postal.get_valid_postal_code_prefix_from_url()
     postal_code = postal.get_postal_code()
 
-    # if EXPORT_TO_CSV:
-    #     postal.export_postal_code_to_csv(postal_code)
-
     om = OneMap(api=ONE_MAP_API, postal_code_lst=postal_code)
     lng_lat = om.get_lng_lat()
 
-    for i in lng_lat:
-        print(i)
+    ura = URA(api=URA_API, lng_lat_lst=lng_lat)
+    ura.export_to_csv(ura.get_ura())
+
+    logging.info("Script finished")
