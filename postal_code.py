@@ -16,8 +16,8 @@ class PostalCode:
 
     def get_postal_code(self):
         postal_code = []
-        for prefix in self.postal_prefix_lst:
-            for suffix in self.suffix_range:
+        for suffix in self.suffix_range:
+            for prefix in self.postal_prefix_lst:            
                 current_postal_code = f"{prefix}{str(suffix).zfill(self.suffix_leading_zero_len)}"
                 postal_code.append(current_postal_code)
 
